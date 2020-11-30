@@ -1,0 +1,168 @@
+---
+title: "Geopoll pretest data analysis"
+author: "Brian"
+date: "11/27/2020"
+output: html_document
+---
+
+```{r, libraries}
+library(dplyr)
+library(ggplot2)
+library(readr)
+```
+
+## exploring the dataset
+```{r, load data}
+geopoll_df<-read_csv("./www/geopollpretest.csv")
+head(geopoll_df)
+names(geopoll_df)
+str(geopoll_df)
+summary(geopoll_df)
+```
+
+## what is the age distribution of the respondents?
+## Insights
+### 1. The distribution is normal.
+### 2. Majority of the respondents are between 25 and 31 years of age.
+### N/B add a summary(geopoll_df$age) table to display the exact values.
+```{r, age distribution}
+ggplot(data = geopoll_df,aes(y=Age))+
+  geom_boxplot(aes(fill="red"))+
+  labs(
+    title = "Distribution of geopoll respondents by age."
+  )+
+  guides(
+    fill=FALSE
+  )+
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14)
+  )
+
+ggsave("./www/age_distribution.png")
+```
+
+## what is the age group distribution of the respondents?
+```{r, age group percentage distribution}
+geopoll_agegroup<-geopoll_df %>% count(AgeGroup) %>% mutate(percentage_people=round(100*n/sum(n),0))
+#head(geopoll_agegroup)
+ggplot(data = geopoll_agegroup,aes(x=AgeGroup,y=percentage_people))+
+  geom_col(aes(fill="red"))+
+  labs(
+    title = "Percentage distribution of geopoll respondents by age group.",
+    y="Percentage of respondents",
+    x="Age Group"
+  )+
+  guides(
+    fill=FALSE
+  )+
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14)
+  )
+ggsave("./www/agegroup_distribution.png")
+```
+
+## what is the gender percentage distribution of the respondents?
+```{r}
+geopoll_gender<-geopoll_df %>% count(Gender) %>% mutate(percentage_people=round(100*n/sum(n),0))
+#head(geopoll_gender)
+ggplot(data = geopoll_gender,aes(x=Gender,y=percentage_people))+
+  geom_col(aes(fill="red"))+
+  labs(
+    title = "Percentage distribution of geopoll respondents by gender.",
+    y="Percentage of respondents",
+    x="Gender"
+  )+
+  guides(
+    fill=FALSE
+  )+
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14)
+  )
+ggsave("./www/gender_distribution.png")
+```
+
+
+## what is the percentage distribution of geopoll respondents by region?
+```{r}
+geopoll_region<-geopoll_df %>% count(Region) %>% mutate(percentage_people=round(100*n/sum(n),0))
+#head(geopoll_region)
+ggplot(data = geopoll_region,aes(x=reorder(Region,percentage_people),y=percentage_people))+
+  geom_col(aes(fill="red"))+
+  labs(
+    title = "Percentage distribution of geopoll respondents by region.",
+    y="Percentage of respondents",
+    x="Region"
+  )+
+  guides(
+    fill=FALSE
+  )+
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14)
+  )
+ggsave("./www/region_distribution.png")
+```
+
+
+## what is the percentage distribution of geopoll respondents by district?
+```{r}
+geopoll_district<-geopoll_df %>% count(District) %>% mutate(percentage_people=round(100*n/sum(n),0))
+#head(geopoll_district)
+
+ggplot(data = geopoll_district,aes(x=reorder(District,percentage_people),y=percentage_people))+
+  geom_col(aes(fill="red"))+
+  labs(
+    title = "Percentage distribution of geopoll respondents by district.",
+    y="Percentage of respondents",
+    x="District"
+  )+
+  guides(
+    fill=FALSE
+  )+
+  coord_flip()+
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14)
+  )
+ggsave("./www/district_distribution.png")
+```
+
+
+## what is the percentage distribution of geopoll respondents by area
+```{r}
+geopoll_area<-geopoll_df %>% count(Urban_Rural) %>% mutate(percentage_people=round(100*n/sum(n),0))
+#head(geopoll_area)
+
+ggplot(data = geopoll_area,aes(x=Urban_Rural,y=percentage_people))+
+  geom_col(aes(fill="red"))+
+  labs(
+    title = "Percentage distribution of geopoll respondents by area type.",
+    y="Percentage of respondents",
+    x="Area Type"
+  )+
+  guides(
+    fill=FALSE
+  )+
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14)
+  )
+ggsave("./www/areatype_distribution.png")
+```
+
