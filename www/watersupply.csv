@@ -1,0 +1,17 @@
+Watersupply,status,n,percentage_people,covid
+Bottled water/sachet,Yes,259,10,during
+Cartvendor,Yes,27,1,during
+Rainwater,Yes,143,5,during
+Spring/River,Yes,176,7,during
+Standpipe,Yes,273,10,during
+Tanker,Yes,32,1,during
+Tap,Yes,253,9,during
+Well,Yes,183,7,during
+Bottled water/sachet,Yes,254,9,before
+Standpipe,Yes,302,11,before
+Cartvendor,Yes,26,1,before
+Rainwater,Yes,84,3,before
+Spring/River,Yes,153,6,before
+Tanker,Yes,67,2,before
+Tap,Yes,272,10,before
+Well,Yes,194,7,before
