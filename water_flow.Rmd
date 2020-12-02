@@ -1,0 +1,73 @@
+---
+title: "Water flow"
+author: "Brian"
+date: "12/2/2020"
+output: html_document
+---
+
+```{r, libraries}
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyr)
+```
+
+## exploring the dataset
+```{r, load data}
+geopoll_df<-read_csv("./www/geopollpretest.csv")
+head(geopoll_df)
+#names(geopoll_df)
+#str(geopoll_df)
+#summary(geopoll_df)
+```
+
+## In the past 1 week, how many days was the piped water available?
+```{r, flowdays}
+#filtering before and after flow days
+geopoll_flowdays<-geopoll_df %>% select(10,19,32) %>% rename(FlowDaysduring=FlowDays)
+geopoll_flowdays2<-gather(geopoll_flowdays,key = "Type",value ="Days",FlowDaysduring,FlowDaysBefore)
+#head(geopoll_flowdays2)
+ggplot(data = geopoll_flowdays2,aes(y=Days))+
+  geom_boxplot(aes(fill=Type))+
+  scale_fill_discrete(labels=c("Flow days before COVID","Flow days during COVID"))+
+  facet_wrap(~Urban_Rural)+
+  labs(
+    title = "Flow days distribution per area type"
+  )+
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14),
+    legend.title = element_blank()
+  )
+#ggsave("./www/flowdays_distribution.png")
+```
+
+## On the days when piped water is available, how many hours per day, on average does it flow?
+
+```{r, flowhours}
+
+#filtering before and after flow hours
+geopoll_flowhrs<-geopoll_df %>% select(10,20,33) %>% rename(FlowHoursduring=FlowHours)
+geopoll_flowhrs2<-gather(geopoll_flowhrs,key = "Type",value = "Hours",FlowHoursduring,FlowHoursBefore)
+#head(geopoll_flowhrs2)
+ggplot(data = geopoll_flowhrs2,aes(y=Hours))+
+  geom_boxplot(aes(fill=Type))+
+  scale_fill_discrete(labels=c("Flow hours before COVID","Flow hours during COVID"))+
+  facet_wrap(~Urban_Rural)+
+  labs(
+    title = "Flow hours distribution per area type"
+  )+
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14),
+    legend.title = element_blank()
+  )
+#ggsave("./www/flowhours_distribution.png")
+
+```
