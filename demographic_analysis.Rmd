@@ -16,9 +16,9 @@ library(tidyr)
 ```{r, load data}
 geopoll_df<-read_csv("./www/geopollpretest.csv")
 head(geopoll_df)
-names(geopoll_df)
-str(geopoll_df)
-summary(geopoll_df)
+#names(geopoll_df)
+#str(geopoll_df)
+#summary(geopoll_df)
 ```
 
 ## what is the age distribution of the respondents?
@@ -170,49 +170,85 @@ ggsave("./www/areatype_distribution.png")
 ## ACCESS TO WATER SUPPLY.
 ### In the past month, how did you get your drinking water?
 ```{r}
-# geopoll_watersupply<-geopoll_df %>% select(11:18,24:31) %>% gather(key = "Watersupply",value = "status",WaterSupply_Tap:'WaterSupplyBefore_Spring/River')%>% filter(status=="Yes")%>% count(Watersupply,status) %>% mutate(percentage_people=round(100*n/sum(n),0))
+# geopoll_watersupply2<-geopoll_df %>% select(11:18,24:31) %>% gather(key = "Watersupply",value = "status",WaterSupply_Tap:'WaterSupplyBefore_Spring/River')%>% filter(status=="Yes")%>% count(Watersupply,status) %>% mutate(percentage_people=round(100*n/1337,1))
+
 geopoll_watersupply<-read_csv("./www/watersupply.csv")
+
+#defining custom color
+lgnd_color<-c("#FFDB6D", "#C4961A", "#F4EDCA", 
+                "#D16103", "#C3D7A4", "#52854C", "#4E84C4", "#293352")
+lgnd_color2<-c("#000000", "#E69F00", "#56B4E9", "#009E73",
+          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 #head(geopoll_watersupply)
-ggplot(data = geopoll_watersupply,aes(x=Watersupply,y=percentage_people))+
-  geom_col(aes(fill=covid),position = "dodge")+
-  scale_fill_discrete(labels=c("Before COVID19","During COVID19"))+
+ggplot(data = geopoll_watersupply,aes(x=Covid,y=percentage_people))+
+  geom_col(aes(fill=Watersupply))+
+  #geom_text(aes(label=percentage_people,group=percentage_people),hjust=1.5)+
+  scale_fill_manual(values=lgnd_color2)+
   labs(
     title = "Drinking water supply.",
     y="Percentage of respondents",
-    x="Water source"
+    x="Water supply"
+    
   )+
   theme(
-    axis.text.x = element_text(size = 8,angle = 45,margin = margin(t=15)),
+    axis.text.x = element_text(size = 10,margin = margin(t=10)),
     axis.title.y = element_text(size = 12),
     axis.text.y = element_text(size = 10),
     plot.title = element_text(size = 14),
     legend.title = element_blank()
   )
 
-ggsave("./www/drinkingwater_supply.png")
+#ggsave("./www/drinkingwater_supply_V2.png")
+```
+## How difficult is it to access water per area type?
+```{r,wateraccess}
+geopoll_wateraccess<-geopoll_df %>% count(Urban_Rural,WaterChange) %>% mutate(percentage_people=round(100*n/sum(n),0))
+#head(geopoll_wateraccess)
+
+ggplot(data = geopoll_wateraccess,aes(x=Urban_Rural,y=percentage_people))+
+  geom_col(aes(fill=WaterChange))+
+  scale_fill_manual(values = c("indianred2","turquoise4","#E69F00"))+
+  labs(
+    title = "Percentage distribution of geopoll respondents by water access.",
+    y="Percentage of respondents"
+  
+  )+
+  # guides(
+  #   fill=FALSE
+  # )+
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.title.y = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14),
+    legend.title = element_blank()
+  )
+ggsave("./www/wateraccess_distribution_V2.png")
 ```
 
 
 ## Where is the water source that you use?
 ```{r}
-geopoll_watersource<-geopoll_df %>% count(SourceLocation) %>% mutate(percentage_people=round(100*n/sum(n),0))
-#head(geopoll_watersource)
+geopoll_watersource<-geopoll_df %>% count(Urban_Rural,SourceLocation) %>% mutate(percentage_people=round(100*n/sum(n),0))
+head(geopoll_watersource)
 
 ggplot(data = geopoll_watersource,aes(x=SourceLocation,y=percentage_people))+
-  geom_col(aes(fill="red"))+
+  geom_col(aes(fill=Urban_Rural),position = "dodge")+
   labs(
     title = "Percentage distribution of geopoll respondents by water source location.",
     y="Percentage of respondents",
     x="Water source"
   )+
-  guides(
-    fill=FALSE
-  )+
+  # guides(
+  #   fill=FALSE
+  # )+
   theme(
-    axis.text.x = element_text(size = 12),
+    axis.text.x = element_text(size = 10),
     axis.title.y = element_text(size = 12),
     axis.text.y = element_text(size = 10),
-    plot.title = element_text(size = 14)
+    plot.title = element_text(size = 14),
+    legend.title = element_blank()
   )
 ggsave("./www/watersource_distribution.png")
 ```
@@ -220,15 +256,15 @@ ggsave("./www/watersource_distribution.png")
 ## In the past 1 week, how many days was the piped water available?
 ```{r}
 #filtering before and after flow days
-geopoll_flowdays<-geopoll_df %>% select(10,19,32)
-geopoll_flowdays2<-gather(geopoll_flowdays,key = "Type",value ="Days",FlowDays,FlowDaysBefore)
+geopoll_flowdays<-geopoll_df %>% select(10,19,32) %>% rename(FlowDaysduring=FlowDays)
+geopoll_flowdays2<-gather(geopoll_flowdays,key = "Type",value ="Days",FlowDaysduring,FlowDaysBefore)
 #head(geopoll_flowdays2)
 ggplot(data = geopoll_flowdays2,aes(y=Days))+
   geom_boxplot(aes(fill=Type))+
-  scale_fill_discrete(labels=c("FlowDays during COVID","FlowDays before COVID"))+
+  scale_fill_discrete(labels=c("Flow days before COVID","Flow days during COVID"))+
   facet_wrap(~Urban_Rural)+
   labs(
-    title = "FlowDays distribution per area type"
+    title = "Flow days distribution per area type"
   )+
   theme(
     axis.text.x = element_blank(),
@@ -238,22 +274,23 @@ ggplot(data = geopoll_flowdays2,aes(y=Days))+
     plot.title = element_text(size = 14),
     legend.title = element_blank()
   )
-ggsave("./www/flowdays_distribution.png")
+#ggsave("./www/flowdays_distribution.png")
 ```
 
 ## On the days when piped water is available, how many hours per day, on average does it flow?
 
 ```{r}
+
 #filtering before and after flow hours
-geopoll_flowhrs<-geopoll_df %>% select(10,20,33)
-geopoll_flowhrs2<-gather(geopoll_flowhrs,key = "Type",value = "Hours",FlowHours,FlowHoursBefore)
+geopoll_flowhrs<-geopoll_df %>% select(10,20,33) %>% rename(FlowHoursduring=FlowHours)
+geopoll_flowhrs2<-gather(geopoll_flowhrs,key = "Type",value = "Hours",FlowHoursduring,FlowHoursBefore)
 #head(geopoll_flowhrs2)
 ggplot(data = geopoll_flowhrs2,aes(y=Hours))+
   geom_boxplot(aes(fill=Type))+
-  scale_fill_discrete(labels=c("FlowHours during COVID","FlowHours before COVID"))+
+  scale_fill_discrete(labels=c("Flow hours before COVID","Flow hours during COVID"))+
   facet_wrap(~Urban_Rural)+
   labs(
-    title = "FlowHours distribution per area type"
+    title = "Flow hours distribution per area type"
   )+
   theme(
     axis.text.x = element_blank(),
@@ -263,18 +300,19 @@ ggplot(data = geopoll_flowhrs2,aes(y=Hours))+
     plot.title = element_text(size = 14),
     legend.title = element_blank()
   )
-ggsave("./www/flowhours_distribution.png")
+#ggsave("./www/flowhours_distribution.png")
+
 ```
 
 
 ## how much did you pay for drinking water in the past month?
 ```{r}
 #filtering before and after payments
-geopoll_pay<-geopoll_df %>% select(10,22,34) %>% gather(key = "Type",value = "Pay",WaterPay,WaterPayBefore)
+geopoll_pay<-geopoll_df %>% select(10,22,34) %>% rename(WaterPayduring=WaterPay) %>% gather(key = "Type",value = "Pay",WaterPayduring,WaterPayBefore)
 #head(geopoll_pay)
 ggplot(data = geopoll_pay,aes(y=Pay))+
   geom_boxplot(aes(fill=Type))+
-  scale_fill_discrete(labels=c("Payment during COVID","Payment before COVID"))+
+  scale_fill_discrete(labels=c("Payment before COVID","Payment during COVID"))+
   facet_wrap(~Urban_Rural)+
   labs(
     title = "Water payment per area type",
@@ -288,6 +326,6 @@ ggplot(data = geopoll_pay,aes(y=Pay))+
     plot.title = element_text(size = 14),
     legend.title = element_blank()
   )
-ggsave("./www/water_payment.png")
+#ggsave("./www/water_payment.png")
 ```
 
