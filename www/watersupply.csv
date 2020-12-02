@@ -1,17 +1,17 @@
-Watersupply,status,n,percentage_people,covid
-Bottled water/sachet,Yes,259,10,during
-Cartvendor,Yes,27,1,during
-Rainwater,Yes,143,5,during
-Spring/River,Yes,176,7,during
-Standpipe,Yes,273,10,during
-Tanker,Yes,32,1,during
-Tap,Yes,253,9,during
-Well,Yes,183,7,during
-Bottled water/sachet,Yes,254,9,before
-Standpipe,Yes,302,11,before
-Cartvendor,Yes,26,1,before
-Rainwater,Yes,84,3,before
-Spring/River,Yes,153,6,before
-Tanker,Yes,67,2,before
-Tap,Yes,272,10,before
-Well,Yes,194,7,before
+Watersupply,n,percentage_people,Covid
+Bottled water or sachet,259,19,During COVID
+Cart vendor,27,2,During COVID
+Rainwater,143,11,During COVID
+Spring or River,176,13,During COVID
+Standpipe,273,20,During COVID
+Tanker,32,2,During COVID
+Tap,253,19,During COVID
+Well,183,14,During COVID
+Bottled water or sachet,254,19,Before COVID
+Standpipe,302,23,Before COVID
+Cart vendor,26,2,Before COVID
+Rainwater,84,6,Before COVID
+Spring or River,153,11,Before COVID
+Tanker,67,5,Before COVID
+Tap,272,20,Before COVID
+Well,194,14,Before COVID
